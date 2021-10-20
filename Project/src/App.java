@@ -1,16 +1,11 @@
 import java.awt.Color;
 import java.awt.event.*;
 import java.util.Base64;
-
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.plaf.basic.BasicEditorPaneUI;
-import javax.swing.text.JTextComponent;
 
 public class App {
 
@@ -22,7 +17,7 @@ public class App {
         jFrame.setLayout(null);
         jFrame.setResizable(false);
         // combobox
-        String choices[] = { "Base64/encode", "ascii", "Base64/decode" };
+        String choices[] = { "Base64/encode", "ascii", "Base64/decode", "unicode" };
         JComboBox comboBox = new JComboBox(choices);
         comboBox.setBounds(190, 90, 70, 25);
         comboBox.setVisible(true);
@@ -55,23 +50,39 @@ public class App {
                     }
                     if (comboBox.getSelectedItem() == "Base64/decode") {
                         try {
-                        byte[] decodedBytes = Base64.getDecoder().decode(textField.getText().getBytes());
-                        String s = new String(decodedBytes);
-                        jTextField.setText(s);
-                        }
-                        catch(Exception e) {
-                            JOptionPane.showMessageDialog(jFrame, "Could not find character for the input", "An erron has occured", JOptionPane.INFORMATION_MESSAGE);
+                            byte[] decodedBytes = Base64.getDecoder().decode(textField.getText().getBytes());
+                            String s = new String(decodedBytes);
+                            jTextField.setText(s);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(jFrame, "Could not find character for the input",
+                                    "An error has occured", JOptionPane.INFORMATION_MESSAGE);
                         }
 
                     }
                     if (comboBox.getSelectedItem() == "ascii") {
                         try {
-                        int asciiVal = Integer.parseInt(textField.getText());
-                        String str = new Character((char)asciiVal).toString();
-                        jTextField.setText(str);
+                            int asciiVal = Integer.parseInt(textField.getText());
+                            String str = new Character((char) asciiVal).toString();
+                            jTextField.setText(str);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(jFrame, "Unable to convert, input must be integer",
+                                    "An error has occured", JOptionPane.INFORMATION_MESSAGE);
                         }
-                        catch (Exception e) {
-                            
+                    }
+                    if (comboBox.getSelectedItem() == "unicode") {
+                        try {
+                            String text1 = textField.getText();
+                            String str = text1.split(" ")[0];
+                            str = str.replace("\\", "");
+                            String[] arr = str.split("u");
+                            String text = "";
+                            for (int i = 1; i < arr.length; i++) {
+                                int idk = Integer.parseInt(arr[i], 16);
+                                text += (char) idk;
+                            }
+                            jTextField.setText(text);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(jFrame, "Unable to convert", "An error has occured", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
 
